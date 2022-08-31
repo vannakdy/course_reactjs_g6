@@ -31,3 +31,9 @@
     - Declare function
     - Render List
         Declare state array and render it
+
+# Component
+    - Create 2 (not props) Outside and Call 
+    - Create 1 (has props) Outside and Call 
+
+

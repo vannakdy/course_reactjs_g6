@@ -49,5 +49,47 @@
                 <div key={index}>{item}</div>  
             )
         })}
+# React Component 
+
+    - react compononet  vs html element
+        <MyComponent
+            title=""
+        />
+
+        <img
+            src=""
+            width="100px"
+        />
+    - create React Component
+        // 3 way 
+
+        1. in Main function
+        2. outside Main function
+        3. external Main function
+
+        const MyComponent = (props) =>{
+            return (
+                <div>
+                    <h1 style={{backgroundColor:"red",padding:10}}>Hello MyComponent</h1>
+                </div>
+            )
+        }
+
+        - class 
+         <MyComponent/>
+# React Icon
+    > npm install react-icon
+# Post main OR Thunder client
+    - 
+# Request Data From API
+    1. npm install axios
+    1. install a libary
+        > npm install axios
+    - getlist
+    - create data
+    - update data
+    - delete
+
+
 
 

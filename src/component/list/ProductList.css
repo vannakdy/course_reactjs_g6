@@ -1,0 +1,50 @@
+.row_product{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.row_product_name{
+    margin-top: 15px;
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+}
+.contain_product {
+    margin: 20px;
+
+}
+.product_name {
+   
+    font-size: 18px;
+    color: black;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+.full_price{
+    text-decoration: line-through;
+}
+.discount {
+    margin-left: 5px;
+}
+.price {
+    color:palevioletred;
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.row_price {
+    flex-direction: row;
+    display: flex;
+    margin-bottom: 4px;
+}
+.row_color {
+    flex-direction: row;
+    display: flex;
+}
+
+.icon_heart{
+
+    font-size: 22px;
+}

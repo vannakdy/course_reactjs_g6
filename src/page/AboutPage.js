@@ -1,6 +1,18 @@
 
-import {useState} from "react"
+import {useState,useEffect} from "react"
+import {MyComponent,MyComponent1} from "../component/demo/MyComponent"
+import Animal from "../component/demo/Animal"
+
+// const MyComponent = (props) =>{
+//     return (
+//         <div>
+//             <h1 style={{backgroundColor:"red",padding:10}}>Hello MyComponent</h1>
+//         </div>
+//     )
+// }
+
 function AboutPage () {
+
     var cat = [
         // "MacBook",
         // "HP",
@@ -44,8 +56,35 @@ function AboutPage () {
         setCategroy([...data])
     }
 
+    // const MyComponent = (props) =>{
+    //     return (
+    //         <div>
+    //             <h1 style={{backgroundColor:"red",padding:10}}>Hello MyComponent</h1>
+    //         </div>
+    //     )
+    // }
+
     return (
         <div style={{padding:20}}>
+            <Animal
+                name="Dog"
+                age={10}
+                color="yellow"
+            />
+            <Animal
+                name="Cat"
+                age={3}
+                color="red"
+            />
+            <Animal
+                name="Pig"
+                age={30}
+                color="white"
+            />
+
+            <MyComponent />
+            <MyComponent1 />
+
             <h1>About Page</h1>
             <input
                 value={txtCat}
@@ -54,6 +93,9 @@ function AboutPage () {
                     padding : 10
                 }}
                 onChange={onChangeCat}
+            />
+            <img
+
             />
             
             <button onClick={onClickAdd} style={{padding:10}}>Add</button>

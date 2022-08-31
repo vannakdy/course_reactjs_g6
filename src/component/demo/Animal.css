@@ -1,0 +1,12 @@
+.container{
+    padding: 20px;
+    background-color: gray;
+    width: 200px;
+    height: 100px;
+    margin-top: 10px;
+}
+.name {
+    font-size: 18px;
+    color : rgb(214, 205, 205);
+    font-weight: bold;
+}
