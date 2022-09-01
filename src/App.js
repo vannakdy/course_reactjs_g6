@@ -5,6 +5,7 @@ import RegisterPage from "./page/RegisterPage";
 import ProductPage from "./page/ProductPage";
 import CategoryPage from "./page/CategoryPage";
 import CategoryCreatePage from "./page/CategoryCreatePage";
+import CategoryEditPage from "./page/CategoryEditPage";
 import Route404Page from "./page/Route404Page";
 
 import Header1 from "./component/header/Header1";
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" element={<LoginPage/>} />
           <Route path="/category" element={<CategoryPage/>} />
           <Route path="/category/create" element={<CategoryCreatePage/>} />
+          <Route path="/category/edit/:id" element={<CategoryEditPage/>} />
           <Route path="/register" element={<RegisterPage/>} />
           <Route path="*" element={<Route404Page/>} />
         </Routes>

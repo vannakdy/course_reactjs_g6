@@ -86,7 +86,7 @@ function CategoryPage (props) {
                                 <td>{item.sort_order}</td>
                                 <td>{item.status == 1 ? "Actived" : "Disabled"}</td>
                                 <td>
-                                    <button>Edit</button>
+                                    <Link to={"/category/edit/"+item.category_id}><button>Edit</button></Link>
                                     <button onClick={()=>handleDelete(item)}>Delete</button>
                                 </td>
                             </tr>
