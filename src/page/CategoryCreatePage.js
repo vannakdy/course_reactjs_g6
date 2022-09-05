@@ -3,6 +3,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingLabel from "../component/loading/LoadingLabel";
+import {fetchData} from "../helper"
 const CategoryCreatePage = () => {
     const navigate = useNavigate();
 
@@ -20,20 +21,31 @@ const CategoryCreatePage = () => {
 
     const handleSave = () => {
         setLoading(true)
-        axios({
-            url : "https://demo-intern.cleverapps.io/api/category",
-            method : "POST",
-            data : {
-                "name": name,
-                "parent": parent,
-                "image": image,
-                "sort_order": sort,
-                "status": status
-            }
-        }).then(res=>{
+        var data =  {
+            "name": name,
+            "parent": parent,
+            "image": image,
+            "sort_order": sort,
+            "status": status
+        }
+        fetchData("api/category",data,"POST").then(res=>{
             setLoading(false)
             navigate("/category")
         })
+        // axios({
+        //     url : "https://demo-intern.cleverapps.io/api/category",
+        //     method : "POST",
+        //     data : {
+        //         "name": name,
+        //         "parent": parent,
+        //         "image": image,
+        //         "sort_order": sort,
+        //         "status": status
+        //     }
+        // }).then(res=>{
+        //     setLoading(false)
+        //     navigate("/category")
+        // })
     }
 
     const onChangeName = (event) => {

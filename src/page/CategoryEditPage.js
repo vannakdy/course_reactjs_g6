@@ -3,6 +3,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate,useParams } from "react-router-dom";
 import LoadingLabel from "../component/loading/LoadingLabel";
+import { fetchData } from "../helper";
+
 const CategoryEditPage = () => {
     const navigate = useNavigate();
     const params = useParams();
@@ -21,44 +23,68 @@ const CategoryEditPage = () => {
 
     const getCategoryById = () => {
         setLoading(true)
-        axios({
-            url : "https://demo-intern.cleverapps.io/api/category/"+params.id,
-            method : "GET",
-            // data : {}
-        }).then(res=>{
+        fetchData("api/category/"+params.id).then(res=>{
             setLoading(false)
-            console.log(res.data.list)
-
-            if(res.data.list && res.data.list.length > 0){
-                var item = res.data.list[0];
+            if(res.list && res.list.length > 0){
+                var item = res.list[0];
                 setName(item.name);
                 setParent(item.parent);
                 setImage(item.image);
                 setSort(item.sort_order);
                 setStatus(item.status);
             }
-            
         })
+        // axios({
+        //     url : "https://demo-intern.cleverapps.io/api/category/"+params.id,
+        //     method : "GET",
+        //     // data : {}
+        // }).then(res=>{
+        //     setLoading(false)
+        //     console.log(res.data.list)
+
+        //     if(res.data.list && res.data.list.length > 0){
+        //         var item = res.data.list[0];
+        //         setName(item.name);
+        //         setParent(item.parent);
+        //         setImage(item.image);
+        //         setSort(item.sort_order);
+        //         setStatus(item.status);
+        //     }
+            
+        // })
     }
 
     const handleUpdate = () => {
 
         setLoading(true)
-        axios({
-            url : "https://demo-intern.cleverapps.io/api/category",
-            method : "PUT",
-            data : {
-                "category_id": params.id,
-                "name": name,
-                "parent": parent,
-                "image": image,
-                "sort_order": sort,
-                "status": status
-            }
-        }).then(res=>{
+        var data = {
+            "category_id": params.id,
+            "name": name,
+            "parent": parent,
+            "image": image,
+            "sort_order": sort,
+            "status": status
+        }
+        fetchData("api/category",data,"PUT").then(res=>{
             setLoading(false)
             navigate("/category")
         })
+
+        // axios({
+        //     url : "https://demo-intern.cleverapps.io/api/category",
+        //     method : "PUT",
+        //     data : {
+        //         "category_id": params.id,
+        //         "name": name,
+        //         "parent": parent,
+        //         "image": image,
+        //         "sort_order": sort,
+        //         "status": status
+        //     }
+        // }).then(res=>{
+        //     setLoading(false)
+        //     navigate("/category")
+        // })
     }
 
     const onChangeName = (event) => {

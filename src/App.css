@@ -142,6 +142,7 @@ td ,th {
 
 .form_item{
   width: 100%;
+  margin-top: 10px;
 }
 
 .form_item label{

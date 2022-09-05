@@ -2,6 +2,22 @@ import {useState,useEffect} from "react"
 import axios from "axios"
 import {Link,useNavigate,useLocation} from "react-router-dom";
 import LoadingLabel from "../component/loading/LoadingLabel";
+import { fetchData} from "../helper";
+import {
+    AiFillSignal,
+    AiFillBank
+} from "react-icons/ai"
+import {
+    FcPortraitMode
+} from "react-icons/fc"
+
+import {
+    MdDelete,
+    MdEdit
+} from "react-icons/md"
+
+
+
 
 function CategoryPage (props) {
     const navigate = useNavigate()
@@ -14,35 +30,50 @@ function CategoryPage (props) {
 
     const getList = () => {
         setLoading(true)
-        axios({
-            url : "https://demo-intern.cleverapps.io/api/category",
-            method : "GET"
-        }).then(res=>{
+        fetchData("api/category",{},"GET").then(res=>{
+            setList(res.list)
             setLoading(false)
-            if(res.data && res.data.list){
-                setList(res.data.list)
-            }
-        }).catch(err=>{
-            setLoading(false)
-            console.log(err)
-        })
+        });
+
+        // axios({
+        //     url : "https://demo-intern.cleverapps.io/api/category",
+        //     method : "GET"
+        // }).then(res=>{
+        //     setLoading(false)
+        //     if(res.data && res.data.list){
+        //         setList(res.data.list)
+        //     }
+        // }).catch(err=>{
+        //     setLoading(false)
+        //     console.log(err)
+        //     alert("error")
+        // })
     }
 
     const handleDelete = (item) => {
         setLoading(true)
-        axios({
-            url : "https://demo-intern.cleverapps.io/api/category",
-            method : "DELETE", // GET POST PUT DELETE
-            data : {
-                "category_id" : item.category_id
-            }
-        }).then(res=>{
-            setLoading(false)
+        var data =  {
+            "category_id" : item.category_id
+        }
+        fetchData("api/category",data,"DELETE").then(res=>{
             getList();
-        }).catch(err=>{
-            setLoading(false)
-            console.log(err)
-        })
+            setLoading(true)
+        });
+
+        // axios({
+        //     url : "https://demo-intern.cleverapps.io/api/category",
+        //     method : "DELETE", // GET POST PUT DELETE
+        //     data : {
+        //         "category_id" : item.category_id
+        //     }
+        // }).then(res=>{
+        //     setLoading(false)
+        //     getList();
+        // }).catch(err=>{
+        //     setLoading(false)
+        //     alert("error")
+        //     console.log(err)
+        // })
     }
 
     const handleToNeWpage = () => {
@@ -60,6 +91,24 @@ function CategoryPage (props) {
                     <button className="btn_new" onClick={handleToNeWpage}>NEW Category</button>
                 </div>
             </div>
+            <AiFillSignal 
+                className="icon"
+                style={{ 
+                    color:"red",
+                    fontSize : 34,
+                    marginTop:30,
+                    paddingBottom:10
+                }}
+            />
+            <AiFillBank />
+            <FcPortraitMode
+                style={{ 
+                    color:"red",
+                    fontSize : 54,
+                    marginTop:30,
+                    paddingBottom:10
+                }}
+            />
             <LoadingLabel 
                 loading={loading}     
             />
@@ -72,7 +121,7 @@ function CategoryPage (props) {
                         <th>Parent</th>
                         <th>Order</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th style={{textAlign:'right'}}>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -85,9 +134,9 @@ function CategoryPage (props) {
                                 <td>{item.parent}</td>
                                 <td>{item.sort_order}</td>
                                 <td>{item.status == 1 ? "Actived" : "Disabled"}</td>
-                                <td>
-                                    <Link to={"/category/edit/"+item.category_id}><button>Edit</button></Link>
-                                    <button onClick={()=>handleDelete(item)}>Delete</button>
+                                <td style={{textAlign:'right'}}>
+                                    <Link to={"/category/edit/"+item.category_id}><button><MdEdit style={{fontSize:16}}/></button></Link>
+                                    <button onClick={()=>handleDelete(item)}><MdDelete style={{color:'red',fontSize:16}}/></button>
                                 </td>
                             </tr>
                         )
