@@ -89,7 +89,38 @@
     - create data
     - update data
     - delete
-# Helper function
+# Helper 
+    - fechData
+
+# Libray
+    - React Bootstrap
+    - React Materail
+    - React Antd
+    - ....
+
+    => antd
+        > npm install antd
+            import {Button} from "antd";
+            return (
+                <Button>Title</Button>
+            )
+        > npm install --save @ant-design/icons
+            import {StepForwardOutlined} from "@ant-design/icons"
+            return (
+                <Button><StepForwardOutlined /></Button>
+            )
+            
+
+
+# LocalStorage 
+    - setItem
+        LocalStorage.setIte("key",value)
+    - getItem
+        LocalStorage.getItem("key")
+    - removeItem
+        LocalStorage.removeItem("key")
+    - reset
+        LocalStorage.reset()
 
 # React Icon
 

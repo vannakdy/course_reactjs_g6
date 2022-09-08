@@ -130,7 +130,7 @@ td ,th {
 }
 
 .main_title{
-  display: inline;
+  /* display: inline; */
   font-size: 28px;
   font-weight: bold;
   margin-right: 15px;

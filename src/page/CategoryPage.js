@@ -14,8 +14,22 @@ import {
 import {
     MdDelete,
     MdEdit
-} from "react-icons/md"
+} from "react-icons/md";
+import {
+    Button,
+    Input,
+    Row,
+    Col,
+    Drawer,
+    Space,
+    Modal,
+    notification,
+    Popconfirm
+} from "antd";
+import Button1 from "../component/button/Button";
+import {SaveFilled,QuestionCircleOutlined} from "@ant-design/icons"
 
+const {Search} = Input;
 
 
 
@@ -23,6 +37,8 @@ function CategoryPage (props) {
     const navigate = useNavigate()
     const [list,setList] = useState([])
     const [loading,setLoading] = useState(false)
+    const [openDrawer,setOpenDrawer] = useState(false)
+    const [openModal,setOpentModal] = useState(false)
 
     useEffect(()=>{
         getList();
@@ -80,15 +96,93 @@ function CategoryPage (props) {
         navigate("/category/create")
     }
 
+    const handleToggleDrawer = () => {
+        // setOpenDrawer(!openDrawer) // !false => true , !true => false
+        if(openDrawer==false){
+            setOpenDrawer(true)
+        }else{
+            setOpenDrawer(false)
+        }
+    }
+
+    const handleToggleModal = () => {
+        Modal.success({
+            title : "Save",
+            content : "Save category successfully!!"
+        })
+        // setOpentModal(!openModal)
+    }
+
+    const handleModalOk = () => {
+        Modal.success({
+            title : "Save",
+            content : "Save category successfully!!"
+        })
+        setOpentModal(false)
+    }
+
+    const handleNotify = () => {
+        notification.open({
+            message : "Save",
+            description : "Save success Save success Save success Save success"
+        })
+    }
+
     return (
         <div>
+            <Drawer
+                title="My Drawer"
+                open={openDrawer}
+                placement="left"
+                width={600}
+                onClose={handleToggleDrawer}
+            >
+                <h1>Content Drawer...</h1>
+
+                <Space size={"large"}>
+                    <Button onClick={handleToggleDrawer}>Close</Button>
+                    <Button type="primary" style={{width:200,backgroundColor:"green"}}>Save</Button>
+                </Space>
+            </Drawer>
+            <Modal
+                open={openModal}
+                title={"My Modal"}
+                onCancel={handleToggleModal}
+                onOk={handleModalOk}
+            >
+                <h1>Content...</h1>
+                <h1>Content...</h1>
+                <h1>Content...</h1>
+            </Modal>
+
+            <Space>
+                <Button onClick={handleToggleDrawer}>Toggle Drawer</Button>
+                <Button onClick={handleToggleModal}>Open Modal</Button>
+                <Button onClick={handleNotify}>Open Notify</Button>
+            </Space>
             <div className="main_container">
+                <Row >
+                    <Col>
+                        <div className="main_title">Category</div>
+                    </Col>
+                    <Col>
+                        <Search 
+                            placeholder="Search catgory" 
+                            onSearch={()=>{}} 
+                            enterButton 
+                            allowClear
+                        />
+                    </Col>
+                    
+                    
+                </Row>
                 <div className="col1">
-                    <div className="main_title">Category</div>
-                    <input className="text_input" type="text" placeholder="Search"/>
-                </div>
-                <div className="col1">
-                    <button className="btn_new" onClick={handleToNeWpage}>NEW Category</button>
+                    {/* <button className="btn_new" onClick={handleToNeWpage}>NEW Category</button> */}
+                    <Button onClick={handleToNeWpage} type="primary"><SaveFilled />NEW Category</Button>
+                    {/* <Button1
+                        title="AAAA"
+                        type={"delete"}
+                    /> */}
                 </div>
             </div>
             <AiFillSignal 
@@ -125,7 +219,7 @@ function CategoryPage (props) {
                     </tr>
                 </thead>
                 <tbody>
-                    {list.map((item,index)=>{
+                    {list && list.map((item,index)=>{
                         return(
                             <tr key={index}>
                                 <td>{index+1}</td>
@@ -135,8 +229,24 @@ function CategoryPage (props) {
                                 <td>{item.sort_order}</td>
                                 <td>{item.status == 1 ? "Actived" : "Disabled"}</td>
                                 <td style={{textAlign:'right'}}>
-                                    <Link to={"/category/edit/"+item.category_id}><button><MdEdit style={{fontSize:16}}/></button></Link>
-                                    <button onClick={()=>handleDelete(item)}><MdDelete style={{color:'red',fontSize:16}}/></button>
+                                    <Space>
+                                        <Link to={"/category/edit/"+item.category_id}><Button><MdEdit style={{fontSize:16}}/></Button></Link>
+                                        <Popconfirm
+                                            title="Are you sure to delete?"
+                                            icon={
+                                                <QuestionCircleOutlined
+                                                    style={{color:'red'}}
+                                                />
+                                            }
+                                            placement="left"
+                                            onConfirm={()=>handleDelete(item)}
+                                        >
+                                            <Button  danger ><MdDelete style={{color:'red',fontSize:16}}/></Button>
+                                        </Popconfirm>
+                                    </Space>
+
+
+                                    {/* onClick={()=>handleDelete(item)} */}
                                 </td>
                             </tr>
                         )
