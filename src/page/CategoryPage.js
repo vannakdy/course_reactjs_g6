@@ -96,70 +96,8 @@ function CategoryPage (props) {
         navigate("/category/create")
     }
 
-    const handleToggleDrawer = () => {
-        // setOpenDrawer(!openDrawer) // !false => true , !true => false
-        if(openDrawer==false){
-            setOpenDrawer(true)
-        }else{
-            setOpenDrawer(false)
-        }
-    }
-
-    const handleToggleModal = () => {
-        Modal.success({
-            title : "Save",
-            content : "Save category successfully!!"
-        })
-        // setOpentModal(!openModal)
-    }
-
-    const handleModalOk = () => {
-        Modal.success({
-            title : "Save",
-            content : "Save category successfully!!"
-        })
-        setOpentModal(false)
-    }
-
-    const handleNotify = () => {
-        notification.open({
-            message : "Save",
-            description : "Save success Save success Save success Save success"
-        })
-    }
-
     return (
         <div>
-            <Drawer
-                title="My Drawer"
-                open={openDrawer}
-                placement="left"
-                width={600}
-                onClose={handleToggleDrawer}
-            >
-                <h1>Content Drawer...</h1>
-
-                <Space size={"large"}>
-                    <Button onClick={handleToggleDrawer}>Close</Button>
-                    <Button type="primary" style={{width:200,backgroundColor:"green"}}>Save</Button>
-                </Space>
-            </Drawer>
-            <Modal
-                open={openModal}
-                title={"My Modal"}
-                onCancel={handleToggleModal}
-                onOk={handleModalOk}
-            >
-                <h1>Content...</h1>
-                <h1>Content...</h1>
-                <h1>Content...</h1>
-            </Modal>
-
-            <Space>
-                <Button onClick={handleToggleDrawer}>Toggle Drawer</Button>
-                <Button onClick={handleToggleModal}>Open Modal</Button>
-                <Button onClick={handleNotify}>Open Notify</Button>
-            </Space>
             <div className="main_container">
                 <Row >
                     <Col>
@@ -177,32 +115,9 @@ function CategoryPage (props) {
                     
                 </Row>
                 <div className="col1">
-                    {/* <button className="btn_new" onClick={handleToNeWpage}>NEW Category</button> */}
                     <Button onClick={handleToNeWpage} type="primary"><SaveFilled />NEW Category</Button>
-                    {/* <Button1
-                        title="AAAA"
-                        type={"delete"}
-                    /> */}
                 </div>
             </div>
-            <AiFillSignal 
-                className="icon"
-                style={{ 
-                    color:"red",
-                    fontSize : 34,
-                    marginTop:30,
-                    paddingBottom:10
-                }}
-            />
-            <AiFillBank />
-            <FcPortraitMode
-                style={{ 
-                    color:"red",
-                    fontSize : 54,
-                    marginTop:30,
-                    paddingBottom:10
-                }}
-            />
             <LoadingLabel 
                 loading={loading}     
             />
