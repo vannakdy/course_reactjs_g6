@@ -15,7 +15,8 @@ import {
     Popconfirm,
     Select,
     Modal,
-    Form
+    Form,
+    message
 } from "antd";
 import {SaveFilled,QuestionCircleOutlined} from "@ant-design/icons"
 const {Search} = Input;
@@ -33,6 +34,8 @@ function CoursePage (props) {
     const [txtSearch,setTxtSearch] = useState("");
     const [categoryId,setCategoryID] = useState("");
 
+    const [form] = Form.useForm();
+
 
     useEffect(()=>{
         getList();
@@ -47,7 +50,7 @@ function CoursePage (props) {
         if(categoryId !== "" && categoryId !== null){
             param.category_id = categoryId;
         }
-        fetchData("api/course",param,"POST").then(res=>{
+        fetchData("api/course/getList",param,"POST").then(res=>{
             if(!res.err){
                 setList(res.list)
                 setCategory(res.category)
@@ -55,7 +58,6 @@ function CoursePage (props) {
             }else{
                 
             }
-            
         });
     }
 
@@ -88,10 +90,45 @@ function CoursePage (props) {
 
     const onCancelModal = () =>{
         setVisibleModal(false)
+        form.resetFields();
     }
 
     const onOkModal = () => {
 
+    }
+
+    const onFinish = (values) => {
+        debugger
+        var data =  {
+            "category_id" : values.category, 
+            "name" : values.name, 
+            "full_price" : Number(values.price) || 0,
+            "description" : values.description,
+            "status" : values.status
+        }
+        fetchData("api/course",data,"POST").then(res=>{
+            if(!res.err){
+                onCancelModal()
+                message.success('Course create success!');
+                getList();
+                form.resetFields(); 
+
+            }else{
+
+            }
+        })
+
+    }
+
+    const handelClickEdit = (item) => {
+        form.setFieldsValue({
+            name : item.name,
+            price : item.full_price,
+            category : item.course_id,
+            status : item.status,
+            description : ""
+        })
+        setVisibleModal(true)
     }
 
     return (
@@ -101,14 +138,17 @@ function CoursePage (props) {
                 title="New Course"
                 onCancel={onCancelModal}
                 onOk={onOkModal}
+                footer={[]}
             >
                 <Form
+                    form={form}
                     labelCol={{
                         span: 6,
                     }}
                     wrapperCol={{
                         span: 18,
                     }}
+                    onFinish={onFinish}
                 >
                     <Form.Item
                         name={"name"}
@@ -127,6 +167,12 @@ function CoursePage (props) {
                     <Form.Item
                         name={"price"}
                         label={"Course Price"}
+                        rules={[
+                            {
+                              required: true,
+                              message: 'Please fill in course price!',
+                            },
+                        ]}
                     >
                         <Input
                             placeholder="Course Price"
@@ -165,6 +211,19 @@ function CoursePage (props) {
                        <Input.TextArea
                             placeholder="Description"
                        />
+                    </Form.Item>
+                    <Form.Item
+                        style={{
+                            textAlign:"right"
+                        }}
+                        wrapperCol={{
+                            offset : 6
+                        }}
+                    >
+                        <Space>
+                            <Button onClick={onCancelModal}>Cancel</Button>
+                            <Button htmlType="submit" type="primary">Save</Button>
+                        </Space>
                     </Form.Item>
                 </Form>
             </Modal>
@@ -239,7 +298,7 @@ function CoursePage (props) {
                                 <td>{item.status == 1 ? "Actived" : "Disabled"}</td>
                                 <td style={{textAlign:'right'}}>
                                     <Space>
-                                        <Link to={"/category/edit/"+item.category_id}><Button><MdEdit style={{fontSize:16}}/></Button></Link>
+                                        <Button onClick={()=>handelClickEdit(item)}><MdEdit style={{fontSize:16}}/></Button>
                                         <Popconfirm
                                             title="Are you sure to delete?"
                                             icon={
