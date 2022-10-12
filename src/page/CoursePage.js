@@ -16,7 +16,9 @@ import {
     Select,
     Modal,
     Form,
-    message
+    message,
+    Spin,
+    Alert
 } from "antd";
 import {SaveFilled,QuestionCircleOutlined} from "@ant-design/icons"
 const {Search} = Input;
@@ -30,9 +32,13 @@ function CoursePage (props) {
     const [loading,setLoading] = useState(false)
     const [category,setCategory] = useState([])
     const [visibleModal,setVisibleModal] = useState(false);
+    const [visibleMessage,setVisibleMessage] = useState(false);
+
+    
 
     const [txtSearch,setTxtSearch] = useState("");
     const [categoryId,setCategoryID] = useState("");
+    const [courseID,setCourseId] = useState(null)
 
     const [form] = Form.useForm();
 
@@ -64,16 +70,18 @@ function CoursePage (props) {
     const handleDelete = (item) => {
         setLoading(true)
         var data =  {
-            "category_id" : item.category_id
+            "course_id" : item.course_id
         }
-        fetchData("api/category",data,"DELETE").then(res=>{
+        fetchData("api/course",data,"DELETE").then(res=>{
             getList();
             setLoading(true)
+            setVisibleMessage(true)
         });
     }
 
     const handeOpenModal = () => {
         setVisibleModal(true);
+        setCourseId(null)
     }
 
     const onChangeCategory = (value) => {
@@ -98,21 +106,26 @@ function CoursePage (props) {
     }
 
     const onFinish = (values) => {
-        debugger
         var data =  {
-            "category_id" : values.category, 
+            "course_id" : courseID,
+            "category_id" : Number(values.category), 
             "name" : values.name, 
             "full_price" : Number(values.price) || 0,
             "description" : values.description,
-            "status" : values.status
+            "status" : values.status == null ? 0 : 1
         }
-        fetchData("api/course",data,"POST").then(res=>{
+        var method = (courseID == null ?  "POST" : "PUT")
+        fetchData("api/course",data,method).then(res=>{
             if(!res.err){
+                if(courseID == null){
+                    message.success('Course create success!');
+                }else{
+                    message.success('Update success!');
+                }
+                setVisibleMessage(true)
                 onCancelModal()
-                message.success('Course create success!');
                 getList();
                 form.resetFields(); 
-
             }else{
 
             }
@@ -124,18 +137,33 @@ function CoursePage (props) {
         form.setFieldsValue({
             name : item.name,
             price : item.full_price,
-            category : item.course_id,
-            status : item.status,
+            category : item.category_id+"",
+            status : (item.status+"" == "null") ? null : item.status+"",
             description : ""
         })
         setVisibleModal(true)
+        setCourseId(item.course_id)
+    }
+
+    const handleClose = () =>{
+        setVisibleMessage(false)
     }
 
     return (
         <div>
+            {/* <Alert
+                message="Success Tips"
+                description="Detailed description and advice about successful copywriting."
+                type="success"
+                showIcon
+            /> */}
+            {visibleMessage ? (
+                <Alert message="Success " type="success" closable afterClose={handleClose} />
+            ) : null}
+            <Spin spinning={loading}>
             <Modal
                 open={visibleModal}
-                title="New Course"
+                title={courseID == null ? "New Course" : "Edit Course"}
                 onCancel={onCancelModal}
                 onOk={onOkModal}
                 footer={[]}
@@ -187,7 +215,7 @@ function CoursePage (props) {
                        >
                             {category.map((item,index)=>{
                                 return (
-                                    <Option value={item.category_id} key={index}>{item.name}</Option>
+                                    <Option value={item.category_id+""} key={index}>{item.name}</Option>
                                 )
                             })}
                         </Select> 
@@ -198,7 +226,6 @@ function CoursePage (props) {
                     >
                        <Select
                             placeholder="-- Select Status --"
-                            defaultValue={"1"}
                        >
                             <Option value={"1"} >Actived</Option>
                             <Option value={"0"} >Diabled</Option>
@@ -222,7 +249,7 @@ function CoursePage (props) {
                     >
                         <Space>
                             <Button onClick={onCancelModal}>Cancel</Button>
-                            <Button htmlType="submit" type="primary">Save</Button>
+                            <Button htmlType="submit" type="primary">{courseID == null ? "Save" : "Update"}</Button>
                         </Space>
                     </Form.Item>
                 </Form>
@@ -236,7 +263,6 @@ function CoursePage (props) {
                         <Search 
                             placeholder="Search course" 
                             onSearch={handleSearch} 
-                            // onChange={(e)=>setTxtSearch(e.target.value)}
                             onChange={(e)=>{
                                 setTxtSearch(e.target.value)
                                 if(e.target.value == ""){
@@ -244,7 +270,6 @@ function CoursePage (props) {
                                 }
                             }}
                             enterButton 
-                            // allowClear
                             allowClear={true}
                         />
                     </Col>
@@ -256,7 +281,6 @@ function CoursePage (props) {
                             optionFilterProp="children"
                             onChange={onChangeCategory}
                             style={{width : 200}}
-                            // filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
                         >
                             {category.map((item,index)=>{
                                 return (
@@ -321,6 +345,7 @@ function CoursePage (props) {
                     })}
                 </tbody>
             </table>
+            </Spin>
         </div>
     )
 }
