@@ -1,0 +1,18 @@
+.status-active{
+    border:0.5px solid rgb(119, 185, 119);
+    color:rgb(76, 170, 76);
+    font-weight: bold;
+    padding: 2px;
+}
+
+.status-disabled{
+    border:0.5px solid rgb(196, 118, 34);
+    color:rgb(208, 95, 20);
+    font-weight: bold;
+    padding: 2px;
+
+}
+
+.pagination-contain{
+    padding : 20px 0px;
+}

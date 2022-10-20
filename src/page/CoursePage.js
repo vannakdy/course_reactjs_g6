@@ -2,6 +2,7 @@ import {useState,useEffect} from "react"
 import {Link,useNavigate} from "react-router-dom";
 import LoadingLabel from "../component/loading/LoadingLabel";
 import { fetchData} from "../helper";
+
 import {
     MdDelete,
     MdEdit
@@ -18,9 +19,12 @@ import {
     Form,
     message,
     Spin,
-    Alert
+    Alert,
+    Pagination
 } from "antd";
-import {SaveFilled,QuestionCircleOutlined} from "@ant-design/icons"
+import {SaveFilled,QuestionCircleOutlined,ReloadOutlined} from "@ant-design/icons"
+import "../styles/page/CoursePage.css";
+
 const {Search} = Input;
 const {Option} = Select
 
@@ -33,19 +37,16 @@ function CoursePage (props) {
     const [category,setCategory] = useState([])
     const [visibleModal,setVisibleModal] = useState(false);
     const [visibleMessage,setVisibleMessage] = useState(false);
-
-    
-
     const [txtSearch,setTxtSearch] = useState("");
     const [categoryId,setCategoryID] = useState("");
     const [courseID,setCourseId] = useState(null)
-
+    const [page,setPage] = useState(1);
     const [form] = Form.useForm();
 
 
     useEffect(()=>{
         getList();
-    },[txtSearch,categoryId])
+    },[txtSearch,categoryId,page])
 
     const getList = () => {
         setLoading(true)
@@ -56,6 +57,7 @@ function CoursePage (props) {
         if(categoryId !== "" && categoryId !== null){
             param.category_id = categoryId;
         }
+        param.page = page;
         fetchData("api/course/getList",param,"POST").then(res=>{
             if(!res.err){
                 setList(res.list)
@@ -112,7 +114,7 @@ function CoursePage (props) {
             "name" : values.name, 
             "full_price" : Number(values.price) || 0,
             "description" : values.description,
-            "status" : values.status == null ? 0 : 1
+            "status" : Number(values.status) 
         }
         var method = (courseID == null ?  "POST" : "PUT")
         fetchData("api/course",data,method).then(res=>{
@@ -147,6 +149,14 @@ function CoursePage (props) {
 
     const handleClose = () =>{
         setVisibleMessage(false)
+    }
+
+    const handleRefresh = () => {
+        getList();
+    }
+
+    const onChagePaginate = (page,pageSize) =>{
+        setPage(page)
     }
 
     return (
@@ -292,6 +302,9 @@ function CoursePage (props) {
                     <Col>
                         <Button onClick={handleFilter} type="primary"><SaveFilled />Filter</Button>
                     </Col>
+                    <Col>
+                        <Button onClick={handleRefresh} type="primary"><ReloadOutlined /></Button>
+                    </Col>
                 </Row>
                 <div className="col1">
                     <Button onClick={handeOpenModal} type="primary"><SaveFilled />NEW Course</Button>
@@ -319,7 +332,9 @@ function CoursePage (props) {
                                 <td>{item.name}</td>
                                 <td className="txtPrice">{item.full_price}$</td>
                                 <td>{item.category_name}</td>
-                                <td>{item.status == 1 ? "Actived" : "Disabled"}</td>
+                                <td> 
+                                    <div className={item.status == 1 ? "status-active" : "status-disabled"}>{item.status == 1 ? "Actived" : "Disabled"}</div>
+                                </td>
                                 <td style={{textAlign:'right'}}>
                                     <Space>
                                         <Button onClick={()=>handelClickEdit(item)}><MdEdit style={{fontSize:16}}/></Button>
@@ -345,6 +360,13 @@ function CoursePage (props) {
                     })}
                 </tbody>
             </table>
+            <div className="pagination-contain">
+                <Pagination 
+                    defaultCurrent={1} 
+                    total={50} 
+                    onChange={onChagePaginate}
+                />
+            </div>
             </Spin>
         </div>
     )

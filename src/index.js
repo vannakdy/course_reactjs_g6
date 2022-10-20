@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 // import 'antd/dist/antd.less';
+// import "@ant-design/flowchart/dist/index.css";
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
