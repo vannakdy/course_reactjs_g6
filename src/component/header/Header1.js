@@ -20,11 +20,11 @@ function Header1(props) {
               <Link className={(pathname == "course" ) && "active"}  to="/course">Course</Link>
             </li>
             <li> 
-              <Link className={pathname == "product" && "active"}  to="/product">Product</Link>
+              <Link className={pathname == "teacher" && "active"}  to="/teacher">Teacher</Link>
             </li>
 
             <li>
-              <Link className={pathname == "/invoice" && "active"}  to="/invoice">invoice</Link>
+              <Link className={pathname == "/student" && "active"}  to="/student">Student</Link>
             </li>
           </ul>
           <ul>
