@@ -34,37 +34,22 @@ function CoursePage (props) {
 
     const [list,setList] = useState([])
     const [loading,setLoading] = useState(false)
-    const [category,setCategory] = useState([])
     const [visibleModal,setVisibleModal] = useState(false);
-    const [visibleMessage,setVisibleMessage] = useState(false);
-    const [txtSearch,setTxtSearch] = useState("");
-    const [categoryId,setCategoryID] = useState("");
-    const [courseID,setCourseId] = useState(null)
-    const [page,setPage] = useState(1);
+    const [teacherId,setTeacherId] = useState(null)
     const [form] = Form.useForm();
 
 
     useEffect(()=>{
         getList();
-    },[txtSearch,categoryId,page])
+    },[])
 
     const getList = () => {
         setLoading(true)
         var param = {};
-        if(txtSearch !== "" && txtSearch !== null){
-            param.text_search = txtSearch;
-        }
-        if(categoryId !== "" && categoryId !== null){
-            param.category_id = categoryId;
-        }
-        param.page = page;
-        fetchData("api/course/getList",param,"POST").then(res=>{
+        fetchData("api/teacher",param,"GET").then(res=>{
             if(!res.err){
                 setList(res.list)
-                setCategory(res.category)
                 setLoading(false)
-            }else{
-                
             }
         });
     }
@@ -72,31 +57,27 @@ function CoursePage (props) {
     const handleDelete = (item) => {
         setLoading(true)
         var data =  {
-            "course_id" : item.course_id
+            "teacher_id" : item.teacher_id
         }
-        fetchData("api/course",data,"DELETE").then(res=>{
-            getList();
-            setLoading(true)
-            setVisibleMessage(true)
+        fetchData("api/teacher",data,"DELETE").then(res=>{
+            if(res.error){
+                message.warning("Could Remove Ref Teacher")
+            }else{
+                getList();
+            }
+            setLoading(false)
         });
     }
 
     const handeOpenModal = () => {
         setVisibleModal(true);
-        setCourseId(null)
+        setTeacherId(null)
     }
 
-    const onChangeCategory = (value) => {
-        setCategoryID(value)
-    }
 
-    const handleSearch  = () => {
-        getList();
-    }
 
-    const handleFilter = () => {
-        getList();
-    }
+
+ 
 
     const onCancelModal = () =>{
         setVisibleModal(false)
@@ -109,22 +90,21 @@ function CoursePage (props) {
 
     const onFinish = (values) => {
         var data =  {
-            "course_id" : courseID,
+            "course_id" : teacherId,
             "category_id" : Number(values.category), 
             "name" : values.name, 
             "full_price" : Number(values.price) || 0,
             "description" : values.description,
             "status" : Number(values.status) 
         }
-        var method = (courseID == null ?  "POST" : "PUT")
+        var method = (teacherId == null ?  "POST" : "PUT")
         fetchData("api/course",data,method).then(res=>{
             if(!res.err){
-                if(courseID == null){
+                if(teacherId == null){
                     message.success('Course create success!');
                 }else{
                     message.success('Update success!');
                 }
-                setVisibleMessage(true)
                 onCancelModal()
                 getList();
                 form.resetFields(); 
@@ -144,36 +124,16 @@ function CoursePage (props) {
             description : ""
         })
         setVisibleModal(true)
-        setCourseId(item.course_id)
+        setTeacherId(item.teacher_id)
     }
 
-    const handleClose = () =>{
-        setVisibleMessage(false)
-    }
-
-    const handleRefresh = () => {
-        getList();
-    }
-
-    const onChagePaginate = (page,pageSize) =>{
-        setPage(page)
-    }
 
     return (
         <div>
-            {/* <Alert
-                message="Success Tips"
-                description="Detailed description and advice about successful copywriting."
-                type="success"
-                showIcon
-            /> */}
-            {visibleMessage ? (
-                <Alert message="Success " type="success" closable afterClose={handleClose} />
-            ) : null}
             <Spin spinning={loading}>
             <Modal
                 open={visibleModal}
-                title={courseID == null ? "New Course" : "Edit Course"}
+                title={teacherId == null ? "New Teacher" : "Edit Teacher"}
                 onCancel={onCancelModal}
                 onOk={onOkModal}
                 footer={[]}
@@ -189,66 +149,68 @@ function CoursePage (props) {
                     onFinish={onFinish}
                 >
                     <Form.Item
-                        name={"name"}
-                        label={"Course Name"}
+                        name={"firstname"}
+                        label={"Firstname"}
                         rules={[
                             {
                               required: true,
-                              message: 'Please fill in course name!',
+                              message: 'Please fill in firstname!',
                             },
                         ]}
                     >
                         <Input
-                            placeholder="Course Name"
+                            placeholder="Firstname"
                         />
                     </Form.Item>
                     <Form.Item
-                        name={"price"}
-                        label={"Course Price"}
+                        name={"lastname"}
+                        label={"Lirstname"}
                         rules={[
                             {
                               required: true,
-                              message: 'Please fill in course price!',
+                              message: 'Please fill in Lirstname!',
                             },
                         ]}
                     >
                         <Input
-                            placeholder="Course Price"
+                            placeholder="Lirstname"
                         />
                     </Form.Item>
                     <Form.Item
-                        name={"category"}
-                        label={"Category"}
+                        name={"gender"}
+                        label={"gender"}
+                        rules={[
+                            {
+                              required: true,
+                              message: 'Please Select Gender!',
+                            },
+                        ]}
                     >
                        <Select
-                            placeholder="-- Select Cagtegory --"
+                            placeholder="-- Select Gender --"
                        >
-                            {category.map((item,index)=>{
-                                return (
-                                    <Option value={item.category_id+""} key={index}>{item.name}</Option>
-                                )
-                            })}
+                            <Option value={"1"} >Male</Option>
+                            <Option value={"0"} >Female</Option>
                         </Select> 
                     </Form.Item>
                     <Form.Item
-                        name={"status"}
-                        label={"Status"}
+                        name={"email"}
+                        label={"Email"}
                     >
-                       <Select
-                            placeholder="-- Select Status --"
-                       >
-                            <Option value={"1"} >Actived</Option>
-                            <Option value={"0"} >Diabled</Option>
-                        </Select> 
-                    </Form.Item>
-                    <Form.Item
-                        name={"description"}
-                        label={"Description"}
-                    >
-                       <Input.TextArea
-                            placeholder="Description"
+                       <Input
+                            placeholder="Email"
                        />
                     </Form.Item>
+
+                    <Form.Item
+                        name={"tel"}
+                        label={"Tel"}
+                    >
+                       <Input
+                            placeholder="Tel"
+                       />
+                    </Form.Item>
+
                     <Form.Item
                         style={{
                             textAlign:"right"
@@ -259,7 +221,7 @@ function CoursePage (props) {
                     >
                         <Space>
                             <Button onClick={onCancelModal}>Cancel</Button>
-                            <Button htmlType="submit" type="primary">{courseID == null ? "Save" : "Update"}</Button>
+                            <Button htmlType="submit" type="primary">{teacherId == null ? "Save" : "Update"}</Button>
                         </Space>
                     </Form.Item>
                 </Form>
@@ -269,58 +231,20 @@ function CoursePage (props) {
                     <Col>
                         <div className="main_title">Teacher</div>
                     </Col>
-                    <Col>
-                        <Search 
-                            placeholder="Search course" 
-                            onSearch={handleSearch} 
-                            onChange={(e)=>{
-                                setTxtSearch(e.target.value)
-                                if(e.target.value == ""){
-                                    getList(e.target.value);
-                                }
-                            }}
-                            enterButton 
-                            allowClear={true}
-                        />
-                    </Col>
-                    <Col>
-                        <Select
-                            allowClear
-                            showSearch
-                            placeholder="Select a category"
-                            optionFilterProp="children"
-                            onChange={onChangeCategory}
-                            style={{width : 200}}
-                        >
-                            {category.map((item,index)=>{
-                                return (
-                                    <Option key={index} value={item.category_id}>{item.name}</Option>
-                                )
-                            })}
-                        </Select>
-                    </Col>
-                    <Col>
-                        <Button onClick={handleFilter} type="primary"><SaveFilled />Filter</Button>
-                    </Col>
-                    <Col>
-                        <Button onClick={handleRefresh} type="primary"><ReloadOutlined /></Button>
-                    </Col>
                 </Row>
                 <div className="col1">
-                    <Button onClick={handeOpenModal} type="primary"><SaveFilled />NEW Course</Button>
+                    <Button onClick={handeOpenModal} type="primary"><SaveFilled />NEW Teacher</Button>
                 </div>
             </div>
-            <LoadingLabel 
-                loading={loading}     
-            />
             <table>
                 <thead>
                     <tr className="row-table">
                         <th>#</th>
-                        <th>Course name</th>
-                        <th>Price</th>
-                        <th>Category nme</th>
-                        <th>Status</th>
+                        <th>Fistname</th>
+                        <th>Lastname</th>
+                        <th>Gender</th>
+                        <th>Email</th>
+                        <th>Tel</th>
                         <th style={{textAlign:'right'}}>Action</th>
                     </tr>
                 </thead>
@@ -329,12 +253,11 @@ function CoursePage (props) {
                         return(
                             <tr key={index}>
                                 <td>{index+1}</td>
-                                <td>{item.name}</td>
-                                <td className="txtPrice">{item.full_price}$</td>
-                                <td>{item.category_name}</td>
-                                <td> 
-                                    <div className={item.status == 1 ? "status-active" : "status-disabled"}>{item.status == 1 ? "Actived" : "Disabled"}</div>
-                                </td>
+                                <td>{item.firstname}</td>
+                                <td>{item.lastname}</td>
+                                <td>{item.gender == 1 ? "Male" : "Femail"}</td>
+                                <td>{item.email}</td>
+                                <td>{item.tel}</td>
                                 <td style={{textAlign:'right'}}>
                                     <Space>
                                         <Button onClick={()=>handelClickEdit(item)}><MdEdit style={{fontSize:16}}/></Button>
@@ -360,13 +283,6 @@ function CoursePage (props) {
                     })}
                 </tbody>
             </table>
-            <div className="pagination-contain">
-                <Pagination 
-                    defaultCurrent={1} 
-                    total={50} 
-                    onChange={onChagePaginate}
-                />
-            </div>
             </Spin>
         </div>
     )
