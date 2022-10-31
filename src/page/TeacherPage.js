@@ -74,11 +74,6 @@ function CoursePage (props) {
         setTeacherId(null)
     }
 
-
-
-
- 
-
     const onCancelModal = () =>{
         setVisibleModal(false)
         form.resetFields();
@@ -90,20 +85,20 @@ function CoursePage (props) {
 
     const onFinish = (values) => {
         var data =  {
-            "course_id" : teacherId,
-            "category_id" : Number(values.category), 
-            "name" : values.name, 
-            "full_price" : Number(values.price) || 0,
-            "description" : values.description,
-            "status" : Number(values.status) 
+            "teacher_id" : teacherId,
+            "firstname" : values.firstname, 
+            "lastname" : values.lastname,
+            "gender" : Number(values.gender),
+            "email" : (values.email),
+            "tel" : (values.tel) 
         }
         var method = (teacherId == null ?  "POST" : "PUT")
-        fetchData("api/course",data,method).then(res=>{
-            if(!res.err){
+        fetchData("api/teacher",data,method).then(res=>{
+            if(!res.error){
                 if(teacherId == null){
-                    message.success('Course create success!');
+                    message.success('Teacher create success!');
                 }else{
-                    message.success('Update success!');
+                    message.success('Teacher Update success!');
                 }
                 onCancelModal()
                 getList();
@@ -117,11 +112,11 @@ function CoursePage (props) {
 
     const handelClickEdit = (item) => {
         form.setFieldsValue({
-            name : item.name,
-            price : item.full_price,
-            category : item.category_id+"",
-            status : (item.status+"" == "null") ? null : item.status+"",
-            description : ""
+            firstname : item.firstname,
+            lastname : item.lastname,
+            gender : item.gender+"",
+            email : item.email,
+            tel : item.tel
         })
         setVisibleModal(true)
         setTeacherId(item.teacher_id)
@@ -162,6 +157,7 @@ function CoursePage (props) {
                             placeholder="Firstname"
                         />
                     </Form.Item>
+
                     <Form.Item
                         name={"lastname"}
                         label={"Lirstname"}
@@ -173,9 +169,10 @@ function CoursePage (props) {
                         ]}
                     >
                         <Input
-                            placeholder="Lirstname"
+                            placeholder="Lastname"
                         />
                     </Form.Item>
+
                     <Form.Item
                         name={"gender"}
                         label={"gender"}
@@ -193,6 +190,7 @@ function CoursePage (props) {
                             <Option value={"0"} >Female</Option>
                         </Select> 
                     </Form.Item>
+
                     <Form.Item
                         name={"email"}
                         label={"Email"}
@@ -224,7 +222,9 @@ function CoursePage (props) {
                             <Button htmlType="submit" type="primary">{teacherId == null ? "Save" : "Update"}</Button>
                         </Space>
                     </Form.Item>
+
                 </Form>
+
             </Modal>
             <div className="main_container">
                 <Row gutter={10}>
@@ -255,7 +255,7 @@ function CoursePage (props) {
                                 <td>{index+1}</td>
                                 <td>{item.firstname}</td>
                                 <td>{item.lastname}</td>
-                                <td>{item.gender == 1 ? "Male" : "Femail"}</td>
+                                <td>{item.gender == 1 ? "Male" : "Female"}</td>
                                 <td>{item.email}</td>
                                 <td>{item.tel}</td>
                                 <td style={{textAlign:'right'}}>
